@@ -7,14 +7,14 @@ interface SkeletonProps {
 export function Skeleton({ className }: SkeletonProps) {
   return (
     <div
-      className={cn("animate-pulse rounded-md bg-gray-200", className)}
+      className={cn("animate-pulse rounded-md bg-gray-200 dark:bg-gray-700", className)}
     />
   );
 }
 
 export function CardSkeleton() {
   return (
-    <div className="rounded-lg border border-gray-200 p-4">
+    <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
       <Skeleton className="mb-2 h-5 w-3/4" />
       <Skeleton className="mb-4 h-4 w-full" />
       <div className="flex items-center gap-3">
@@ -29,13 +29,13 @@ export function CardSkeleton() {
 export function TableSkeleton({ rows = 5 }: { rows?: number }) {
   return (
     <div className="w-full">
-      <div className="flex gap-4 border-b border-gray-200 pb-3">
+      <div className="flex gap-4 border-b border-gray-200 dark:border-gray-700 pb-3">
         {Array.from({ length: 5 }).map((_, i) => (
           <Skeleton key={i} className="h-4 flex-1" />
         ))}
       </div>
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="flex gap-4 border-b border-gray-100 py-3">
+        <div key={i} className="flex gap-4 border-b border-gray-100 dark:border-gray-800 py-3">
           {Array.from({ length: 5 }).map((_, j) => (
             <Skeleton key={j} className="h-4 flex-1" />
           ))}
@@ -47,7 +47,7 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
 
 export function CommitSkeleton() {
   return (
-    <div className="flex items-center gap-3 border-b border-gray-100 py-3">
+    <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-800 py-3">
       <Skeleton className="h-8 w-8 rounded-full" />
       <div className="flex-1">
         <Skeleton className="mb-1 h-4 w-2/3" />

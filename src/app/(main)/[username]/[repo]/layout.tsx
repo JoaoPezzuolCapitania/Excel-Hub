@@ -53,14 +53,14 @@ export default async function RepoLayout({ children, params }: RepoLayoutProps) 
       {/* Repo header */}
       <div className="mb-6">
         <div className="flex items-center gap-3">
-          <h1 className="text-xl font-bold text-gray-900">
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
             <Link
               href={`/${username}`}
               className="text-brand-600 hover:underline"
             >
               {username}
             </Link>
-            <span className="mx-1 text-gray-400">/</span>
+            <span className="mx-1 text-gray-400 dark:text-gray-500">/</span>
             <Link href={basePath} className="hover:underline">
               {repo.name}
             </Link>
@@ -78,12 +78,12 @@ export default async function RepoLayout({ children, params }: RepoLayoutProps) 
           </Badge>
         </div>
         {repo.description && (
-          <p className="mt-1 text-sm text-gray-500">{repo.description}</p>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{repo.description}</p>
         )}
       </div>
 
       {/* Navigation tabs */}
-      <nav className="mb-6 border-b border-gray-200">
+      <nav className="mb-6 border-b border-gray-200 dark:border-gray-700">
         <div className="-mb-px flex space-x-6">
           {NAV_TABS.map((tab) => {
             const href = `${basePath}${tab.segment}`;
@@ -92,7 +92,7 @@ export default async function RepoLayout({ children, params }: RepoLayoutProps) 
               <Link
                 key={tab.key}
                 href={href}
-                className="flex items-center gap-1.5 whitespace-nowrap border-b-2 border-transparent px-1 pb-3 text-sm font-medium text-gray-500 transition-colors hover:border-gray-300 hover:text-gray-700"
+                className="flex items-center gap-1.5 whitespace-nowrap border-b-2 border-transparent px-1 pb-3 text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <Icon className="h-4 w-4" />
                 {tab.label}

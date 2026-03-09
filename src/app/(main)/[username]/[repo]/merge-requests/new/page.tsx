@@ -95,7 +95,7 @@ export default function NewMergeRequestPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h2 className="mb-6 text-lg font-semibold text-gray-900">
+      <h2 className="mb-6 text-lg font-semibold text-gray-900 dark:text-gray-100">
         New Merge Request
       </h2>
 
@@ -110,11 +110,11 @@ export default function NewMergeRequestPage() {
         />
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Description (optional)
           </label>
           <textarea
-            className="flex min-h-[100px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+            className="flex min-h-[100px] w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
             placeholder="Provide additional context about the changes"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -144,7 +144,7 @@ export default function NewMergeRequestPage() {
           </div>
         )}
 
-        <div className="flex justify-end gap-3 border-t border-gray-200 pt-6">
+        <div className="flex justify-end gap-3 border-t border-gray-200 dark:border-gray-700 pt-6">
           <Button
             type="button"
             variant="ghost"

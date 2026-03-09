@@ -9,6 +9,7 @@ import {
   Upload,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const features = [
   {
@@ -51,14 +52,15 @@ const features = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
-      <header className="border-b border-gray-100">
+    <div className="min-h-screen bg-white dark:bg-gray-950">
+      <header className="border-b border-gray-100 dark:border-gray-800">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
             <FileSpreadsheet className="h-7 w-7 text-brand-600" />
-            <span className="text-xl font-bold text-gray-900">ExcelHub</span>
+            <span className="text-xl font-bold text-gray-900 dark:text-gray-100">ExcelHub</span>
           </div>
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <Link href="/login">
               <Button variant="ghost" size="sm">
                 Sign in
@@ -75,11 +77,11 @@ export default function LandingPage() {
 
       <section className="px-4 py-24 text-center sm:py-32">
         <div className="mx-auto max-w-3xl">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl dark:text-gray-100">
             Version control for your{" "}
             <span className="text-brand-600">spreadsheets</span>
           </h1>
-          <p className="mt-6 text-lg leading-8 text-gray-600">
+          <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-400">
             ExcelHub brings the power of Git to Excel files. Upload
             spreadsheets, create branches, track changes with cell-level diffs,
             and collaborate with your team.
@@ -99,13 +101,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="features" className="bg-gray-50 px-4 py-24">
+      <section id="features" className="bg-gray-50 px-4 py-24 dark:bg-gray-900">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
               Everything you need for spreadsheet version control
             </h2>
-            <p className="mt-4 text-lg text-gray-600">
+            <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
               All the tools you know from GitHub, designed for Excel and CSV
               files.
             </p>
@@ -114,15 +116,15 @@ export default function LandingPage() {
             {features.map((feature) => (
               <div
                 key={feature.title}
-                className="rounded-lg border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md"
+                className="rounded-lg border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
               >
-                <div className="mb-4 inline-flex rounded-lg bg-brand-50 p-2">
+                <div className="mb-4 inline-flex rounded-lg bg-brand-50 p-2 dark:bg-brand-900/30">
                   <feature.icon className="h-6 w-6 text-brand-600" />
                 </div>
-                <h3 className="mb-2 text-lg font-semibold text-gray-900">
+                <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-gray-600">{feature.description}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -131,10 +133,10 @@ export default function LandingPage() {
 
       <section className="px-4 py-24 text-center">
         <div className="mx-auto max-w-2xl">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
             Ready to get started?
           </h2>
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
             Sign up for free and start managing your spreadsheets like code.
           </p>
           <div className="mt-8">

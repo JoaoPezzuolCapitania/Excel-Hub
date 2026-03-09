@@ -21,7 +21,7 @@ export function CommitCard({ commit, repoPath }: CommitCardProps) {
   return (
     <Link
       href={`${repoPath}/commit/${commit.id}`}
-      className="flex items-center gap-4 rounded-lg border border-gray-200 bg-white px-4 py-3 transition-colors hover:bg-gray-50"
+      className="flex items-center gap-4 rounded-lg border border-gray-200 bg-white px-4 py-3 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800"
     >
       <Avatar
         src={commit.author.image}
@@ -29,10 +29,10 @@ export function CommitCard({ commit, repoPath }: CommitCardProps) {
         size="sm"
       />
       <div className="flex-1 min-w-0">
-        <p className="truncate text-sm font-semibold text-gray-900">
+        <p className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
           {commit.message}
         </p>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-gray-500 dark:text-gray-400">
           {commit.author.name || "Unknown"} committed{" "}
           {formatRelativeDate(commit.createdAt)}
         </p>

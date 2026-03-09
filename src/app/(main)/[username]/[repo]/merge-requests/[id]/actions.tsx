@@ -38,7 +38,7 @@ export function MergeRequestActions({
   }
 
   return (
-    <div className="mt-4 flex items-center gap-3 border-t border-gray-200 pt-4">
+    <div className="mt-4 flex items-center gap-3 border-t border-gray-200 dark:border-gray-700 pt-4">
       <Button
         variant="primary"
         size="sm"

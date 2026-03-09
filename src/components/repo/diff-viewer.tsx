@@ -53,7 +53,7 @@ export function DiffViewer({ diff }: DiffViewerProps) {
 
   if (!sheet) {
     return (
-      <div className="py-8 text-center text-sm text-gray-500">
+      <div className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
         No diff data available.
       </div>
     );
@@ -62,8 +62,8 @@ export function DiffViewer({ diff }: DiffViewerProps) {
   return (
     <div className="space-y-4">
       {/* Summary bar */}
-      <div className="flex items-center gap-4 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-        <span className="text-sm font-medium text-gray-700">Changes:</span>
+      <div className="flex items-center gap-4 rounded-lg border border-gray-200 bg-gray-50 dark:bg-gray-800 px-4 py-3 dark:border-gray-700 dark:bg-gray-800/50">
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Changes:</span>
         <span className="text-sm font-semibold text-green-700">
           +{diff.summary.totalAdded} added
         </span>
@@ -73,7 +73,7 @@ export function DiffViewer({ diff }: DiffViewerProps) {
         <span className="text-sm font-semibold text-amber-700">
           ~{diff.summary.totalModified} modified
         </span>
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-gray-500 dark:text-gray-400">
           ({diff.summary.sheetsChanged} sheet
           {diff.summary.sheetsChanged !== 1 ? "s" : ""} changed)
         </span>
@@ -87,7 +87,7 @@ export function DiffViewer({ diff }: DiffViewerProps) {
             "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
             viewMode === "side-by-side"
               ? "bg-brand-100 text-brand-700"
-              : "text-gray-500 hover:bg-gray-100"
+              : "text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
           )}
         >
           Side by side
@@ -98,7 +98,7 @@ export function DiffViewer({ diff }: DiffViewerProps) {
             "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
             viewMode === "unified"
               ? "bg-brand-100 text-brand-700"
-              : "text-gray-500 hover:bg-gray-100"
+              : "text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
           )}
         >
           Unified
@@ -107,7 +107,7 @@ export function DiffViewer({ diff }: DiffViewerProps) {
 
       {/* Sheet tabs */}
       {diff.sheets.length > 1 && (
-        <div className="flex gap-1 border-b border-gray-200">
+        <div className="flex gap-1 border-b border-gray-200 dark:border-gray-700">
           {diff.sheets.map((s, idx) => {
             const totalSheetChanges =
               s.stats.added + s.stats.removed + s.stats.modified;
@@ -119,7 +119,7 @@ export function DiffViewer({ diff }: DiffViewerProps) {
                   "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px",
                   idx === activeSheet
                     ? "border-brand-500 text-brand-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-600"
                 )}
               >
                 {s.sheetName}
@@ -144,7 +144,7 @@ export function DiffViewer({ diff }: DiffViewerProps) {
 
       {/* Diff table */}
       {allRows.length === 0 ? (
-        <div className="py-8 text-center text-sm text-gray-500">
+        <div className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
           No cell changes in this sheet.
         </div>
       ) : viewMode === "unified" ? (
@@ -174,28 +174,28 @@ function UnifiedView({
   changeMap: Map<string, CellChange>;
 }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead className="bg-gray-50 dark:bg-gray-800">
           <tr>
-            <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+            <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
               #
             </th>
-            <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+            <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
               Column
             </th>
-            <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+            <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
               Old Value
             </th>
-            <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+            <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
               New Value
             </th>
-            <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+            <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
               Type
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100 bg-white">
+        <tbody className="divide-y divide-gray-100 bg-white dark:divide-gray-800 dark:bg-gray-950">
           {allRows.flatMap((row) =>
             allCols
               .filter((col) => changeMap.has(`${row}:${col}`))
@@ -203,14 +203,14 @@ function UnifiedView({
                 const change = changeMap.get(`${row}:${col}`)!;
                 return (
                   <tr key={`${row}:${col}`}>
-                    <td className="whitespace-nowrap px-3 py-2 text-xs text-gray-400">
+                    <td className="whitespace-nowrap px-3 py-2 text-xs text-gray-400 dark:text-gray-500">
                       {row + 1}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-2 text-sm font-medium text-gray-700">
+                    <td className="whitespace-nowrap px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                       {col}
                     </td>
                     <td
-                      className="whitespace-nowrap px-3 py-2 text-sm text-gray-700"
+                      className="whitespace-nowrap px-3 py-2 text-sm text-gray-700 dark:text-gray-300"
                       style={{
                         backgroundColor:
                           change.type === "removed" || change.type === "modified"
@@ -223,7 +223,7 @@ function UnifiedView({
                         : ""}
                     </td>
                     <td
-                      className="whitespace-nowrap px-3 py-2 text-sm text-gray-700"
+                      className="whitespace-nowrap px-3 py-2 text-sm text-gray-700 dark:text-gray-300"
                       style={{
                         backgroundColor:
                           change.type === "added" || change.type === "modified"
@@ -270,30 +270,30 @@ function SideBySideView({
   return (
     <div className="grid grid-cols-2 gap-4">
       {/* Old (left) */}
-      <div className="overflow-x-auto rounded-lg border border-gray-200">
+      <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
         <div className="bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 border-b border-gray-200">
           Before
         </div>
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
                 #
               </th>
               {allCols.map((col) => (
                 <th
                   key={col}
-                  className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500"
+                  className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-400"
                 >
                   {col}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 bg-white">
+          <tbody className="divide-y divide-gray-100 bg-white dark:divide-gray-800 dark:bg-gray-950">
             {allRows.map((row) => (
               <tr key={row}>
-                <td className="whitespace-nowrap px-3 py-2 text-xs text-gray-400">
+                <td className="whitespace-nowrap px-3 py-2 text-xs text-gray-400 dark:text-gray-500">
                   {row + 1}
                 </td>
                 {allCols.map((col) => {
@@ -301,7 +301,7 @@ function SideBySideView({
                   return (
                     <td
                       key={col}
-                      className="whitespace-nowrap px-3 py-2 text-sm text-gray-700"
+                      className="whitespace-nowrap px-3 py-2 text-sm text-gray-700 dark:text-gray-300"
                       style={{
                         backgroundColor: change
                           ? getCellBg(
@@ -323,30 +323,30 @@ function SideBySideView({
       </div>
 
       {/* New (right) */}
-      <div className="overflow-x-auto rounded-lg border border-gray-200">
+      <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
         <div className="bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700 border-b border-gray-200">
           After
         </div>
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
                 #
               </th>
               {allCols.map((col) => (
                 <th
                   key={col}
-                  className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500"
+                  className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-400"
                 >
                   {col}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 bg-white">
+          <tbody className="divide-y divide-gray-100 bg-white dark:divide-gray-800 dark:bg-gray-950">
             {allRows.map((row) => (
               <tr key={row}>
-                <td className="whitespace-nowrap px-3 py-2 text-xs text-gray-400">
+                <td className="whitespace-nowrap px-3 py-2 text-xs text-gray-400 dark:text-gray-500">
                   {row + 1}
                 </td>
                 {allCols.map((col) => {
@@ -354,7 +354,7 @@ function SideBySideView({
                   return (
                     <td
                       key={col}
-                      className="whitespace-nowrap px-3 py-2 text-sm text-gray-700"
+                      className="whitespace-nowrap px-3 py-2 text-sm text-gray-700 dark:text-gray-300"
                       style={{
                         backgroundColor: change
                           ? getCellBg(

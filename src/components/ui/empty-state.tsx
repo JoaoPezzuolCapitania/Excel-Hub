@@ -23,11 +23,11 @@ export function EmptyState({
         className
       )}
     >
-      <div className="mb-4 rounded-full bg-gray-100 p-3">
-        <Icon className="h-6 w-6 text-gray-400" />
+      <div className="mb-4 rounded-full bg-gray-100 p-3 dark:bg-gray-800">
+        <Icon className="h-6 w-6 text-gray-400 dark:text-gray-500" />
       </div>
-      <h3 className="mb-1 text-sm font-medium text-gray-900">{title}</h3>
-      <p className="mb-4 max-w-sm text-sm text-gray-500">{description}</p>
+      <h3 className="mb-1 text-sm font-medium text-gray-900 dark:text-gray-100">{title}</h3>
+      <p className="mb-4 max-w-sm text-sm text-gray-500 dark:text-gray-400">{description}</p>
       {action}
     </div>
   );

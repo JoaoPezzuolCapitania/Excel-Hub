@@ -52,38 +52,38 @@ export function MergeConflictResolver({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
-        <p className="text-sm font-medium text-amber-800">
+      <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-700 dark:bg-amber-900/20">
+        <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
           {conflicts.length} conflict{conflicts.length !== 1 ? "s" : ""} found.
           Choose which value to keep for each cell.
         </p>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-gray-200">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
                 Cell
               </th>
-              <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
                 Source Value
               </th>
-              <th className="px-3 py-2 text-center text-xs font-medium uppercase text-gray-500">
+              <th className="px-3 py-2 text-center text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
                 Keep Source
               </th>
-              <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
                 Target Value
               </th>
-              <th className="px-3 py-2 text-center text-xs font-medium uppercase text-gray-500">
+              <th className="px-3 py-2 text-center text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
                 Keep Target
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 bg-white">
+          <tbody className="divide-y divide-gray-100 bg-white dark:divide-gray-800 dark:bg-gray-950">
             {conflicts.map((conflict, idx) => (
               <tr key={`${conflict.row}:${conflict.col}`}>
-                <td className="whitespace-nowrap px-3 py-2 text-sm font-medium text-gray-700">
+                <td className="whitespace-nowrap px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                   Row {conflict.row + 1}, {conflict.col}
                 </td>
                 <td
@@ -91,7 +91,7 @@ export function MergeConflictResolver({
                     "whitespace-nowrap px-3 py-2 text-sm",
                     choices[idx] === "source"
                       ? "bg-green-50 text-green-800 font-medium"
-                      : "text-gray-700"
+                      : "text-gray-700 dark:text-gray-300"
                   )}
                   style={{
                     backgroundColor:
@@ -116,7 +116,7 @@ export function MergeConflictResolver({
                     "whitespace-nowrap px-3 py-2 text-sm",
                     choices[idx] === "target"
                       ? "bg-green-50 text-green-800 font-medium"
-                      : "text-gray-700"
+                      : "text-gray-700 dark:text-gray-300"
                   )}
                   style={{
                     backgroundColor:

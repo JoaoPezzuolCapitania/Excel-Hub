@@ -43,10 +43,10 @@ export default function NewRepoPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-2 text-2xl font-bold text-gray-900">
+      <h1 className="mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
         Create a new repository
       </h1>
-      <p className="mb-8 text-sm text-gray-500">
+      <p className="mb-8 text-sm text-gray-500 dark:text-gray-400">
         A repository contains all your spreadsheet files, branches, and commit
         history.
       </p>
@@ -62,11 +62,11 @@ export default function NewRepoPage() {
         />
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Description (optional)
           </label>
           <textarea
-            className="flex min-h-[80px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+            className="flex min-h-[80px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
             placeholder="Short description of this repository"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -74,7 +74,7 @@ export default function NewRepoPage() {
         </div>
 
         <div>
-          <label className="mb-3 block text-sm font-medium text-gray-700">
+          <label className="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Visibility
           </label>
           <div className="space-y-2">
@@ -85,18 +85,18 @@ export default function NewRepoPage() {
                 "flex w-full items-center gap-3 rounded-lg border p-4 text-left transition-colors",
                 visibility === "PUBLIC"
                   ? "border-brand-500 bg-brand-50"
-                  : "border-gray-200 hover:bg-gray-50"
+                  : "border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
               )}
             >
               <Globe
                 className={cn(
                   "h-5 w-5",
-                  visibility === "PUBLIC" ? "text-brand-600" : "text-gray-400"
+                  visibility === "PUBLIC" ? "text-brand-600" : "text-gray-400 dark:text-gray-500"
                 )}
               />
               <div>
-                <p className="text-sm font-medium text-gray-900">Public</p>
-                <p className="text-xs text-gray-500">
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Public</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   Anyone can see this repository
                 </p>
               </div>
@@ -108,18 +108,18 @@ export default function NewRepoPage() {
                 "flex w-full items-center gap-3 rounded-lg border p-4 text-left transition-colors",
                 visibility === "PRIVATE"
                   ? "border-brand-500 bg-brand-50"
-                  : "border-gray-200 hover:bg-gray-50"
+                  : "border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
               )}
             >
               <Lock
                 className={cn(
                   "h-5 w-5",
-                  visibility === "PRIVATE" ? "text-brand-600" : "text-gray-400"
+                  visibility === "PRIVATE" ? "text-brand-600" : "text-gray-400 dark:text-gray-500"
                 )}
               />
               <div>
-                <p className="text-sm font-medium text-gray-900">Private</p>
-                <p className="text-xs text-gray-500">
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Private</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   Only you and collaborators can see this repository
                 </p>
               </div>
@@ -133,7 +133,7 @@ export default function NewRepoPage() {
           </div>
         )}
 
-        <div className="border-t border-gray-200 pt-6">
+        <div className="border-t border-gray-200 pt-6 dark:border-gray-700">
           <Button
             type="submit"
             variant="primary"

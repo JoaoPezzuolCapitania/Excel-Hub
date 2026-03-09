@@ -61,7 +61,7 @@ export default async function MergeRequestsPage({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900">Merge Requests</h2>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Merge Requests</h2>
         <Link href={`${repoPath}/merge-requests/new`}>
           <Button variant="primary" size="sm">
             <Plus className="mr-2 h-4 w-4" />
@@ -84,12 +84,12 @@ export default async function MergeRequestsPage({
           }
         />
       ) : (
-        <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
+        <div className="divide-y divide-gray-200 dark:divide-gray-700 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
           {repo.mergeRequests.map((mr) => (
             <Link
               key={mr.id}
               href={`${repoPath}/merge-requests/${mr.id}`}
-              className="flex items-center justify-between px-4 py-3 transition-colors hover:bg-gray-50"
+              className="flex items-center justify-between px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               <div className="flex items-center gap-3">
                 <GitMerge
@@ -98,14 +98,14 @@ export default async function MergeRequestsPage({
                       ? "text-green-600"
                       : mr.status === "OPEN"
                         ? "text-blue-600"
-                        : "text-gray-400"
+                        : "text-gray-400 dark:text-gray-500"
                   }`}
                 />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {mr.title}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     {mr.sourceBranch.name} &rarr; {mr.targetBranch.name}
                     {" \u00b7 "}
                     opened by {mr.author.name || "Unknown"}{" "}

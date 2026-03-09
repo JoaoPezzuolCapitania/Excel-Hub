@@ -59,7 +59,7 @@ export default async function CommitDetailPage({
   return (
     <div className="space-y-6">
       {/* Commit metadata */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6">
         <div className="flex items-start gap-4">
           <Avatar
             src={commit.author.image}
@@ -67,10 +67,10 @@ export default async function CommitDetailPage({
             size="lg"
           />
           <div className="flex-1">
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               {commit.message}
             </h2>
-            <div className="mt-1 flex items-center gap-3 text-sm text-gray-500">
+            <div className="mt-1 flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
               <span>{commit.author.name || "Unknown"}</span>
               <span>committed {formatRelativeDate(commit.createdAt)}</span>
               <Badge className="font-mono">{commit.hash}</Badge>
@@ -82,7 +82,7 @@ export default async function CommitDetailPage({
       {/* Diff from parent */}
       {diff && (
         <div>
-          <h3 className="mb-3 text-sm font-semibold text-gray-900">
+          <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
             Changes from parent commit
           </h3>
           <DiffViewer diff={diff} />
@@ -91,7 +91,7 @@ export default async function CommitDetailPage({
 
       {/* Current file viewer */}
       <div>
-        <h3 className="mb-3 text-sm font-semibold text-gray-900">
+        <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
           File contents
         </h3>
         <SpreadsheetViewer snapshot={snapshot} />

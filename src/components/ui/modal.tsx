@@ -40,15 +40,15 @@ export function Modal({
       />
       <div
         className={cn(
-          "relative z-50 w-full max-w-lg rounded-lg bg-white p-6 shadow-xl",
+          "relative z-50 w-full max-w-lg rounded-lg bg-white p-6 shadow-xl dark:bg-gray-900",
           className
         )}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h2>
           <button
             onClick={onClose}
-            className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+            className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-400"
           >
             <X className="h-5 w-5" />
           </button>

@@ -28,7 +28,7 @@ export function BranchSelector({
 
   return (
     <div className="flex items-center gap-2">
-      <GitBranch className="h-4 w-4 text-gray-500" />
+      <GitBranch className="h-4 w-4 text-gray-500 dark:text-gray-400" />
       <Select
         options={branches.map((b) => ({ value: b.id, label: b.name }))}
         value={currentBranch}

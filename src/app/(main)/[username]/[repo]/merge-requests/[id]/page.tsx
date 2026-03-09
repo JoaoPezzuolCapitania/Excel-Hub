@@ -87,7 +87,7 @@ export default async function MergeRequestDetailPage({
   return (
     <div className="space-y-6">
       {/* MR Header */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6">
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-3">
@@ -97,30 +97,30 @@ export default async function MergeRequestDetailPage({
                     ? "text-green-600"
                     : mr.status === "OPEN"
                       ? "text-blue-600"
-                      : "text-gray-400"
+                      : "text-gray-400 dark:text-gray-500"
                 }`}
               />
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                 {mr.title}
               </h2>
               <Badge variant={STATUS_VARIANT[mr.status] || "default"}>
                 {mr.status}
               </Badge>
             </div>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               {mr.author.name || "Unknown"} wants to merge{" "}
               <span className="font-mono text-xs rounded bg-blue-50 px-1.5 py-0.5 text-blue-700">
                 {mr.sourceBranch.name}
               </span>
               {" into "}
-              <span className="font-mono text-xs rounded bg-gray-100 px-1.5 py-0.5 text-gray-700">
+              <span className="font-mono text-xs rounded bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 text-gray-700 dark:text-gray-300">
                 {mr.targetBranch.name}
               </span>
               {" \u00b7 "}
               {formatRelativeDate(mr.createdAt)}
             </p>
             {mr.description && (
-              <p className="mt-3 text-sm text-gray-700">{mr.description}</p>
+              <p className="mt-3 text-sm text-gray-700 dark:text-gray-300">{mr.description}</p>
             )}
           </div>
         </div>
@@ -134,13 +134,13 @@ export default async function MergeRequestDetailPage({
       {/* Diff */}
       {diff ? (
         <div>
-          <h3 className="mb-3 text-sm font-semibold text-gray-900">
+          <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
             Changes
           </h3>
           <DiffViewer diff={diff} />
         </div>
       ) : (
-        <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-8 text-center text-sm text-gray-500">
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
           {!sourceSnapshot || !targetSnapshot
             ? "One or both branches have no commits to compare."
             : "No changes between these branches."}

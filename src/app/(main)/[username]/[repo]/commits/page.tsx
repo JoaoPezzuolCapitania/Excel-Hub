@@ -69,7 +69,7 @@ export default async function CommitsPage({
           currentBranch={activeBranch?.id || ""}
           repoPath={`${repoPath}/commits`}
         />
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           {commits.length} commit{commits.length !== 1 ? "s" : ""}
         </p>
       </div>

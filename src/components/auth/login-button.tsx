@@ -38,7 +38,7 @@ export function LoginButton({ provider, className }: LoginButtonProps) {
           />
         </svg>
       ),
-      className: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50",
+      className: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700",
     },
   };
 

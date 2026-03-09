@@ -142,8 +142,8 @@ export function FileUpload({ repoId, branchId, onSuccess }: FileUploadProps) {
           "flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-colors",
           isDragging
             ? "border-brand-500 bg-brand-50"
-            : "border-gray-300 hover:border-gray-400",
-          file && "border-green-400 bg-green-50"
+            : "border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500",
+          file && "border-green-400 bg-green-50 dark:bg-green-900/20"
         )}
       >
         <input
@@ -157,8 +157,8 @@ export function FileUpload({ repoId, branchId, onSuccess }: FileUploadProps) {
           <div className="flex items-center gap-3">
             <FileSpreadsheet className="h-8 w-8 text-green-600" />
             <div>
-              <p className="text-sm font-medium text-gray-900">{file.name}</p>
-              <p className="text-xs text-gray-500">
+              <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{file.name}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 {(file.size / 1024).toFixed(1)} KB
               </p>
             </div>
@@ -168,18 +168,18 @@ export function FileUpload({ repoId, branchId, onSuccess }: FileUploadProps) {
                 e.stopPropagation();
                 removeFile();
               }}
-              className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-300"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
         ) : (
           <>
-            <Upload className="mb-2 h-8 w-8 text-gray-400" />
-            <p className="text-sm font-medium text-gray-700">
+            <Upload className="mb-2 h-8 w-8 text-gray-400 dark:text-gray-500" />
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Drop your spreadsheet here, or click to browse
             </p>
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
               Supports .xlsx and .csv files
             </p>
           </>

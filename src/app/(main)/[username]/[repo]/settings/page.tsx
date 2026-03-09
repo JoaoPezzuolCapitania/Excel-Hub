@@ -132,7 +132,7 @@ export default function RepoSettingsPage() {
 
   if (!settings) {
     return (
-      <div className="py-8 text-center text-sm text-gray-500">
+      <div className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
         Loading settings...
       </div>
     );
@@ -142,7 +142,7 @@ export default function RepoSettingsPage() {
     <div className="mx-auto max-w-2xl space-y-8">
       {/* General settings */}
       <div>
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">General</h2>
+        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">General</h2>
         <form onSubmit={handleSave} className="space-y-6">
           <Input
             label="Repository name"
@@ -153,11 +153,11 @@ export default function RepoSettingsPage() {
           />
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
               Description
             </label>
             <textarea
-              className="flex min-h-[80px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+              className="flex min-h-[80px] w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
               placeholder="Short description of this repository"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -165,7 +165,7 @@ export default function RepoSettingsPage() {
           </div>
 
           <div>
-            <label className="mb-3 block text-sm font-medium text-gray-700">
+            <label className="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
               Visibility
             </label>
             <div className="space-y-2">
@@ -176,7 +176,7 @@ export default function RepoSettingsPage() {
                   "flex w-full items-center gap-3 rounded-lg border p-4 text-left transition-colors",
                   visibility === "PUBLIC"
                     ? "border-brand-500 bg-brand-50"
-                    : "border-gray-200 hover:bg-gray-50"
+                    : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
                 )}
               >
                 <Globe
@@ -184,12 +184,12 @@ export default function RepoSettingsPage() {
                     "h-5 w-5",
                     visibility === "PUBLIC"
                       ? "text-brand-600"
-                      : "text-gray-400"
+                      : "text-gray-400 dark:text-gray-500"
                   )}
                 />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Public</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Public</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     Anyone can see this repository
                   </p>
                 </div>
@@ -201,7 +201,7 @@ export default function RepoSettingsPage() {
                   "flex w-full items-center gap-3 rounded-lg border p-4 text-left transition-colors",
                   visibility === "PRIVATE"
                     ? "border-brand-500 bg-brand-50"
-                    : "border-gray-200 hover:bg-gray-50"
+                    : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
                 )}
               >
                 <Lock
@@ -209,12 +209,12 @@ export default function RepoSettingsPage() {
                     "h-5 w-5",
                     visibility === "PRIVATE"
                       ? "text-brand-600"
-                      : "text-gray-400"
+                      : "text-gray-400 dark:text-gray-500"
                   )}
                 />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Private</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Private</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     Only you and collaborators can see this repository
                   </p>
                 </div>
@@ -241,7 +241,7 @@ export default function RepoSettingsPage() {
       </div>
 
       {/* Collaborators */}
-      <div className="border-t border-gray-200 pt-8">
+      <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
         <CollaboratorList
           collaborators={collaborators}
           repoId={settings.id}
@@ -250,15 +250,15 @@ export default function RepoSettingsPage() {
       </div>
 
       {/* Danger zone */}
-      <div className="border-t border-gray-200 pt-8">
+      <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
         <h2 className="mb-4 text-lg font-semibold text-red-600">
           Danger Zone
         </h2>
         <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-          <h3 className="text-sm font-semibold text-gray-900">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
             Delete this repository
           </h3>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Once you delete a repository, there is no going back. This will
             permanently delete the repository, all branches, commits, and
             collaborators.

@@ -124,12 +124,12 @@ export function CollaboratorList({
 
   return (
     <div className="space-y-6">
-      <h3 className="text-sm font-semibold text-gray-900">Collaborators</h3>
+      <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Collaborators</h3>
 
       {/* Collaborator list */}
-      <div className="divide-y divide-gray-200 rounded-lg border border-gray-200">
+      <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 dark:divide-gray-700 dark:border-gray-700">
         {list.length === 0 ? (
-          <div className="px-4 py-6 text-center text-sm text-gray-500">
+          <div className="px-4 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
             No collaborators yet.
           </div>
         ) : (
@@ -145,10 +145,10 @@ export function CollaboratorList({
                   size="sm"
                 />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {collab.user.name || "Unnamed"}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     {collab.user.email || ""}
                   </p>
                 </div>
@@ -166,7 +166,7 @@ export function CollaboratorList({
                     />
                     <button
                       onClick={() => handleRemove(collab.id)}
-                      className="rounded-md p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                      className="rounded-md p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors dark:text-gray-500 dark:hover:bg-red-900/30 dark:hover:text-red-400"
                       title="Remove collaborator"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -186,7 +186,7 @@ export function CollaboratorList({
       {/* Add collaborator form (owner only) */}
       {isOwner && (
         <form onSubmit={handleAdd} className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-700 flex items-center gap-2">
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
             <UserPlus className="h-4 w-4" />
             Add collaborator
           </h4>

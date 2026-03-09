@@ -12,7 +12,7 @@ export default function RepoLoading() {
         <Skeleton className="h-9 w-36" />
         <Skeleton className="h-9 w-28" />
       </div>
-      <div className="rounded-lg border border-gray-200 bg-white p-4">
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
         <TableSkeleton rows={8} />
       </div>
     </div>

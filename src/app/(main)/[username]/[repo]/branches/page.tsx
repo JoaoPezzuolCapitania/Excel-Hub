@@ -58,7 +58,7 @@ export default async function BranchesPage({ params }: BranchesPageProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900">Branches</h2>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Branches</h2>
         {isOwner && (
           <CreateBranchButton
             repoId={repo.id}
@@ -74,14 +74,14 @@ export default async function BranchesPage({ params }: BranchesPageProps) {
           description="Create a branch to start organizing your work."
         />
       ) : (
-        <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
+        <div className="divide-y divide-gray-200 dark:divide-gray-700 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
           {repo.branches.map((branch) => (
             <div
               key={branch.id}
               className="flex items-center justify-between px-4 py-3"
             >
               <div className="flex items-center gap-3">
-                <GitBranch className="h-4 w-4 text-gray-400" />
+                <GitBranch className="h-4 w-4 text-gray-400 dark:text-gray-500" />
                 <div>
                   <Link
                     href={`${repoPath}?branch=${branch.id}`}
@@ -99,16 +99,16 @@ export default async function BranchesPage({ params }: BranchesPageProps) {
               <div className="text-right">
                 {branch.headCommit ? (
                   <div>
-                    <p className="text-sm text-gray-700 truncate max-w-xs">
+                    <p className="text-sm text-gray-700 dark:text-gray-300 truncate max-w-xs">
                       {branch.headCommit.message}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {branch.headCommit.author.name || "Unknown"} &middot;{" "}
                       {formatRelativeDate(branch.headCommit.createdAt)}
                     </p>
                   </div>
                 ) : (
-                  <p className="text-xs text-gray-400">No commits</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">No commits</p>
                 )}
               </div>
             </div>
