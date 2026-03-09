@@ -66,3 +66,26 @@ export const uploadFileSchema = z.object({
   repoId: z.string().min(1),
   branchId: z.string().min(1),
 });
+
+export const auditLogQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  action: z
+    .enum([
+      "REPO_CREATED",
+      "REPO_UPDATED",
+      "REPO_DELETED",
+      "COMMIT_CREATED",
+      "BRANCH_CREATED",
+      "MERGE_REQUEST_CREATED",
+      "MERGE_REQUEST_MERGED",
+      "MERGE_REQUEST_CLOSED",
+      "COLLABORATOR_ADDED",
+      "COLLABORATOR_REMOVED",
+      "FILE_UPLOADED",
+    ])
+    .optional(),
+  userId: z.string().optional(),
+  dateFrom: z.string().optional(),
+  dateTo: z.string().optional(),
+});

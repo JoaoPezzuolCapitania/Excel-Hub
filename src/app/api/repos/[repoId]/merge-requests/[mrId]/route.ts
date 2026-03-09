@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateCommitHash } from "@/lib/utils";
 import { MergeRequestStatus } from "@prisma/client";
+import { createAuditLog, createAuditLogTx } from "@/lib/audit";
 
 type RouteContext = { params: Promise<{ repoId: string; mrId: string }> };
 
@@ -136,6 +137,20 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
           },
         });
 
+        await createAuditLogTx(tx, {
+          action: "MERGE_REQUEST_MERGED",
+          userId: session.user.id,
+          repoId,
+          metadata: {
+            mergeRequestId: mrId,
+            title: mergeRequest.title,
+            sourceBranchName: mergeRequest.sourceBranch.name,
+            targetBranchName: mergeRequest.targetBranch.name,
+            mergeCommitHash: hash,
+          },
+          req,
+        });
+
         return updatedMR;
       });
 
@@ -153,6 +168,14 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
           select: { id: true, name: true, email: true, image: true },
         },
       },
+    });
+
+    createAuditLog({
+      action: "MERGE_REQUEST_CLOSED",
+      userId: session.user.id,
+      repoId,
+      metadata: { mergeRequestId: mrId, title: mergeRequest.title },
+      req,
     });
 
     return NextResponse.json(updatedMR);

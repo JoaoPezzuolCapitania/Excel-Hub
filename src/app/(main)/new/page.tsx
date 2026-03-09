@@ -84,7 +84,7 @@ export default function NewRepoPage() {
               className={cn(
                 "flex w-full items-center gap-3 rounded-lg border p-4 text-left transition-colors",
                 visibility === "PUBLIC"
-                  ? "border-brand-500 bg-brand-50"
+                  ? "border-brand-500 bg-brand-50 dark:bg-brand-900/30"
                   : "border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
               )}
             >
@@ -107,7 +107,7 @@ export default function NewRepoPage() {
               className={cn(
                 "flex w-full items-center gap-3 rounded-lg border p-4 text-left transition-colors",
                 visibility === "PRIVATE"
-                  ? "border-brand-500 bg-brand-50"
+                  ? "border-brand-500 bg-brand-50 dark:bg-brand-900/30"
                   : "border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
               )}
             >

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { createRepoSchema } from "@/lib/validators";
 import { slugify } from "@/lib/utils";
 import { CollaboratorRole } from "@prisma/client";
+import { createAuditLogTx } from "@/lib/audit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -61,6 +62,14 @@ export async function POST(req: NextRequest) {
           branches: true,
           collaborators: true,
         },
+      });
+
+      await createAuditLogTx(tx, {
+        action: "REPO_CREATED",
+        userId: session.user.id,
+        repoId: repository.id,
+        metadata: { repoName: name, slug, visibility },
+        req,
       });
 
       return repository;

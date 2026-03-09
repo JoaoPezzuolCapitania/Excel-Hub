@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ChatWidget } from "@/components/chat-widget";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -47,7 +48,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
         <SessionProvider>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            {children}
+            <ChatWidget />
+          </ThemeProvider>
         </SessionProvider>
       </body>
     </html>

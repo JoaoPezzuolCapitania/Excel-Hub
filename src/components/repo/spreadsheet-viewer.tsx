@@ -11,7 +11,7 @@ import {
   type SortingState,
 } from "@tanstack/react-table";
 import { Pagination } from "@/components/ui/pagination";
-import { cn } from "@/lib/utils";
+import { cn, formatCellValue } from "@/lib/utils";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import type { ExcelSnapshot } from "@/types";
 
@@ -46,8 +46,14 @@ export function SpreadsheetViewer({ snapshot }: SpreadsheetViewerProps) {
         header: header,
         cell: (info) => {
           const value = info.getValue();
-          return value !== null && value !== undefined ? String(value) : "";
+          const formatted = formatCellValue(value);
+          return (
+            <span className={cn(formatted.isNumeric && "font-mono tabular-nums")}>
+              {formatted.text}
+            </span>
+          );
         },
+        meta: { header },
       })
     );
 
@@ -105,17 +111,17 @@ export function SpreadsheetViewer({ snapshot }: SpreadsheetViewerProps) {
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+      <div className="max-h-[70vh] overflow-auto rounded-lg border border-gray-200 dark:border-gray-700 scrollbar-thin">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-800">
+          <thead className="sticky top-0 z-10 bg-gray-100 dark:bg-gray-800 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
                     className={cn(
-                      "px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400",
-                      header.column.getCanSort() && "cursor-pointer select-none"
+                      "px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300",
+                      header.column.getCanSort() && "cursor-pointer select-none hover:text-gray-900 dark:hover:text-gray-100"
                     )}
                     onClick={header.column.getToggleSortingHandler()}
                   >
@@ -138,15 +144,28 @@ export function SpreadsheetViewer({ snapshot }: SpreadsheetViewerProps) {
           </thead>
           <tbody className="divide-y divide-gray-100 bg-white dark:divide-gray-800 dark:bg-gray-950">
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="hover:bg-gray-50 dark:hover:bg-gray-900">
-                {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className="whitespace-nowrap px-3 py-2 text-sm text-gray-700 dark:text-gray-300"
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
+              <tr
+                key={row.id}
+                className={cn(
+                  "transition-colors hover:bg-brand-50 dark:hover:bg-brand-900/40",
+                  row.index % 2 === 1 && "bg-gray-50/50 dark:bg-gray-900/30"
+                )}
+              >
+                {row.getVisibleCells().map((cell) => {
+                  const value = cell.getValue();
+                  const isNumeric = typeof value === "number";
+                  return (
+                    <td
+                      key={cell.id}
+                      className={cn(
+                        "whitespace-nowrap px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300",
+                        isNumeric && "text-right"
+                      )}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>

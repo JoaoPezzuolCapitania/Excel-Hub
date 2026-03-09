@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { generateCommitHash } from "@/lib/utils";
 import { getFileFromLocal } from "@/lib/s3";
 import { parseExcelBuffer } from "@/lib/excel";
+import { createAuditLogTx } from "@/lib/audit";
 
 type RouteContext = { params: Promise<{ repoId: string }> };
 
@@ -63,6 +64,19 @@ export async function POST(req: NextRequest, context: RouteContext) {
       await tx.branch.update({
         where: { id: branchId },
         data: { headCommitId: newCommit.id },
+      });
+
+      await createAuditLogTx(tx, {
+        action: "COMMIT_CREATED",
+        userId: session.user.id,
+        repoId,
+        metadata: {
+          commitHash: hash,
+          message: message || "Upload file",
+          branchId,
+          branchName: branch.name,
+        },
+        req,
       });
 
       return newCommit;

@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { addCollaboratorSchema } from "@/lib/validators";
 import { CollaboratorRole } from "@prisma/client";
+import { createAuditLog } from "@/lib/audit";
 
 type RouteContext = { params: Promise<{ repoId: string }> };
 
@@ -85,6 +86,18 @@ export async function POST(req: NextRequest, context: RouteContext) {
       },
     });
 
+    createAuditLog({
+      action: "COLLABORATOR_ADDED",
+      userId: session.user.id,
+      repoId,
+      metadata: {
+        collaboratorUserId: userToAdd.id,
+        collaboratorEmail: email,
+        role,
+      },
+      req,
+    });
+
     return NextResponse.json(collaborator, { status: 201 });
   } catch (error) {
     console.error("Error adding collaborator:", error);
@@ -135,6 +148,14 @@ export async function DELETE(req: NextRequest, context: RouteContext) {
 
     await prisma.collaborator.delete({
       where: { userId_repoId: { userId, repoId } },
+    });
+
+    createAuditLog({
+      action: "COLLABORATOR_REMOVED",
+      userId: session.user.id,
+      repoId,
+      metadata: { removedUserId: userId, removedRole: collaborator.role },
+      req,
     });
 
     return NextResponse.json({ message: "Collaborator removed" });

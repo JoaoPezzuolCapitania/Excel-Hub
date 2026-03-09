@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { updateRepoSchema } from "@/lib/validators";
 import { slugify } from "@/lib/utils";
 import { CollaboratorRole } from "@prisma/client";
+import { createAuditLog } from "@/lib/audit";
 
 type RouteContext = { params: Promise<{ repoId: string }> };
 
@@ -115,6 +116,14 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
       },
     });
 
+    createAuditLog({
+      action: "REPO_UPDATED",
+      userId: session.user.id,
+      repoId,
+      metadata: { changes: parsed.data },
+      req,
+    });
+
     return NextResponse.json(repo);
   } catch (error) {
     console.error("Error updating repository:", error);
@@ -143,8 +152,21 @@ export async function DELETE(req: NextRequest, context: RouteContext) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const repoToDelete = await prisma.repository.findUnique({
+      where: { id: repoId },
+      select: { name: true, slug: true },
+    });
+
     await prisma.repository.delete({
       where: { id: repoId },
+    });
+
+    createAuditLog({
+      action: "REPO_DELETED",
+      userId: session.user.id,
+      repoId,
+      metadata: { repoName: repoToDelete?.name, slug: repoToDelete?.slug },
+      req,
     });
 
     return NextResponse.json({ message: "Repository deleted" });

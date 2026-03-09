@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createBranchSchema } from "@/lib/validators";
+import { createAuditLog } from "@/lib/audit";
 
 type RouteContext = { params: Promise<{ repoId: string }> };
 
@@ -95,6 +96,19 @@ export async function POST(req: NextRequest, context: RouteContext) {
           },
         },
       },
+    });
+
+    createAuditLog({
+      action: "BRANCH_CREATED",
+      userId: session.user.id,
+      repoId,
+      metadata: {
+        branchId: branch.id,
+        branchName: name,
+        fromBranchId,
+        fromBranchName: sourceBranch.name,
+      },
+      req,
     });
 
     return NextResponse.json(branch, { status: 201 });
