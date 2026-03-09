@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { UserMenu } from "@/components/auth/user-menu";
 import { Button } from "@/components/ui/button";
-import { Plus, FileSpreadsheet } from "lucide-react";
+import { Plus, FileSpreadsheet, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Header() {
@@ -31,6 +31,22 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-3">
+          {session && (
+            <button
+              onClick={() => {
+                document.dispatchEvent(
+                  new KeyboardEvent("keydown", { key: "k", ctrlKey: true })
+                );
+              }}
+              className="hidden items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-500 transition-colors hover:border-gray-300 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-800 sm:flex"
+            >
+              <Search className="h-3.5 w-3.5" />
+              <span>Search...</span>
+              <kbd className="ml-2 rounded border border-gray-200 bg-white px-1.5 py-0.5 text-[10px] font-medium dark:border-gray-600 dark:bg-gray-700">
+                Ctrl K
+              </kbd>
+            </button>
+          )}
           <ThemeToggle />
           {session ? (
             <>

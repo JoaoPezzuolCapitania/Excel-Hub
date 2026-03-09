@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { NavigationProgress } from "@/components/navigation-progress";
+import { CommandPalette } from "@/components/search/command-palette";
 import { ChatWidget } from "@/components/chat-widget";
 import "./globals.css";
 
@@ -55,6 +56,7 @@ export default function RootLayout({
               <NavigationProgress />
             </Suspense>
             {children}
+            <CommandPalette />
             <ChatWidget />
           </ThemeProvider>
         </SessionProvider>
