@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { SpreadsheetViewer } from "@/components/repo/spreadsheet-viewer";
 import { BranchSelector } from "@/components/repo/branch-selector";
 import { FileUploadButton } from "./file-upload-button";
+import { DownloadButton } from "@/components/repo/download-button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { FileSpreadsheet } from "lucide-react";
 import type { ExcelSnapshot } from "@/types";
@@ -74,9 +75,14 @@ export default async function RepoPage({
           currentBranch={activeBranch?.id || ""}
           repoPath={repoPath}
         />
-        {isOwner && activeBranch && (
-          <FileUploadButton repoId={repo.id} branchId={activeBranch.id} />
-        )}
+        <div className="flex items-center gap-2">
+          {snapshot && activeBranch && (
+            <DownloadButton repoId={repo.id} branchId={activeBranch.id} />
+          )}
+          {isOwner && activeBranch && (
+            <FileUploadButton repoId={repo.id} branchId={activeBranch.id} />
+          )}
+        </div>
       </div>
 
       {/* Spreadsheet content */}
