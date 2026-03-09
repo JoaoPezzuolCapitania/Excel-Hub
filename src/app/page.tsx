@@ -7,9 +7,12 @@ import {
   Users,
   History,
   Upload,
+  LayoutDashboard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { UserMenu } from "@/components/auth/user-menu";
+import { auth } from "@/lib/auth";
 
 const features = [
   {
@@ -50,7 +53,9 @@ const features = [
   },
 ];
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const session = await auth();
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
       <header className="border-b border-gray-100 dark:border-gray-800">
@@ -61,16 +66,30 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <Link href="/login">
-              <Button variant="ghost" size="sm">
-                Sign in
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button variant="primary" size="sm">
-                Get started
-              </Button>
-            </Link>
+            {session?.user ? (
+              <>
+                <Link href="/dashboard">
+                  <Button variant="primary" size="sm">
+                    <LayoutDashboard className="mr-1 h-4 w-4" />
+                    Dashboard
+                  </Button>
+                </Link>
+                <UserMenu />
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm">
+                    Sign in
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button variant="primary" size="sm">
+                    Get started
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>

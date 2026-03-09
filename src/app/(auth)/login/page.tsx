@@ -1,8 +1,15 @@
+import { redirect } from "next/navigation";
 import { LoginButton } from "@/components/auth/login-button";
 import { FileSpreadsheet } from "lucide-react";
 import Link from "next/link";
+import { auth } from "@/lib/auth";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const session = await auth();
+  if (session?.user) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 dark:bg-gray-950">
       <div className="w-full max-w-sm">

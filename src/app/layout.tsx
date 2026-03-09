@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import localFont from "next/font/local";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "@/components/theme-provider";
+import { NavigationProgress } from "@/components/navigation-progress";
 import { ChatWidget } from "@/components/chat-widget";
 import "./globals.css";
 
@@ -49,6 +51,9 @@ export default function RootLayout({
       >
         <SessionProvider>
           <ThemeProvider>
+            <Suspense fallback={null}>
+              <NavigationProgress />
+            </Suspense>
             {children}
             <ChatWidget />
           </ThemeProvider>
