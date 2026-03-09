@@ -1,0 +1,203 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Auth.js Models ─────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+
+  accounts       Account[]
+  sessions       Session[]
+  repositories   Repository[]
+  collaborations Collaborator[]
+  commits        Commit[]
+  mergeRequests  MergeRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── Application Models ─────────────────────────────────────
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum CollaboratorRole {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+enum MergeRequestStatus {
+  OPEN
+  MERGED
+  CLOSED
+}
+
+model Repository {
+  id            String     @id @default(cuid())
+  name          String     @db.VarChar(100)
+  slug          String     @db.VarChar(100)
+  description   String?    @db.Text
+  visibility    Visibility @default(PUBLIC)
+  defaultBranch String     @default("main") @db.VarChar(50)
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  branches      Branch[]
+  collaborators Collaborator[]
+  mergeRequests MergeRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([ownerId, slug])
+  @@index([ownerId])
+  @@index([slug])
+}
+
+model Branch {
+  id   String @id @default(cuid())
+  name String @db.VarChar(100)
+
+  repoId String
+  repo   Repository @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  headCommitId String? @unique
+  headCommit   Commit? @relation("BranchHead", fields: [headCommitId], references: [id], onDelete: SetNull)
+
+  createdFromBranchId String?
+  createdFromBranch   Branch?  @relation("BranchLineage", fields: [createdFromBranchId], references: [id], onDelete: SetNull)
+  derivedBranches     Branch[] @relation("BranchLineage")
+
+  commits Commit[] @relation("CommitBranch")
+
+  sourceMergeRequests MergeRequest[] @relation("SourceBranch")
+  targetMergeRequests MergeRequest[] @relation("TargetBranch")
+
+  createdAt DateTime @default(now())
+
+  @@unique([repoId, name])
+  @@index([repoId])
+}
+
+model Commit {
+  id      String @id @default(cuid())
+  hash    String @db.VarChar(8)
+  message String @db.VarChar(500)
+
+  fileUrl      String @db.Text
+  jsonSnapshot Json
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  branchId String
+  branch   Branch @relation("CommitBranch", fields: [branchId], references: [id], onDelete: Cascade)
+
+  parentId String?
+  parent   Commit?  @relation("CommitHistory", fields: [parentId], references: [id], onDelete: SetNull)
+  children Commit[] @relation("CommitHistory")
+
+  headOfBranch Branch? @relation("BranchHead")
+
+  createdAt DateTime @default(now())
+
+  @@index([branchId])
+  @@index([authorId])
+  @@index([hash])
+}
+
+model Collaborator {
+  id   String           @id @default(cuid())
+  role CollaboratorRole @default(VIEWER)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  repoId String
+  repo   Repository @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, repoId])
+  @@index([userId])
+  @@index([repoId])
+}
+
+model MergeRequest {
+  id          String             @id @default(cuid())
+  title       String             @db.VarChar(200)
+  description String?            @db.Text
+  status      MergeRequestStatus @default(OPEN)
+
+  repoId String
+  repo   Repository @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  sourceBranchId String
+  sourceBranch   Branch @relation("SourceBranch", fields: [sourceBranchId], references: [id], onDelete: Cascade)
+
+  targetBranchId String
+  targetBranch   Branch @relation("TargetBranch", fields: [targetBranchId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([repoId])
+  @@index([authorId])
+  @@index([status])
+}
