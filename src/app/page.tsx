@@ -135,7 +135,7 @@ export default async function LandingPage() {
             {features.map((feature) => (
               <div
                 key={feature.title}
-                className="rounded-lg border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
+                className="rounded-lg border border-gray-200 bg-white p-6 transition-all duration-200 hover:scale-[1.03] hover:shadow-lg dark:border-gray-700 dark:bg-gray-800"
               >
                 <div className="mb-4 inline-flex rounded-lg bg-brand-50 p-2 dark:bg-brand-900/30">
                   <feature.icon className="h-6 w-6 text-brand-600" />
