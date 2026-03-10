@@ -6,6 +6,7 @@ import { UserMenu } from "@/components/auth/user-menu";
 import { Button } from "@/components/ui/button";
 import { Plus, FileSpreadsheet, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 
 export function Header() {
   const { data: session } = useSession();
@@ -50,6 +51,7 @@ export function Header() {
           <ThemeToggle />
           {session ? (
             <>
+              <NotificationBell />
               <Link href="/new">
                 <Button variant="primary" size="sm">
                   <Plus className="mr-1 h-4 w-4" />

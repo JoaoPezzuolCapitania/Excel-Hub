@@ -10,7 +10,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { EmptyState } from "@/components/ui/empty-state";
 import { CardSkeleton } from "@/components/ui/loading-skeleton";
 import { Button } from "@/components/ui/button";
-import { ClipboardList, Download } from "lucide-react";
+import { ClipboardList, Download, FileText, FileSpreadsheet } from "lucide-react";
 
 export default function AuditLogPage() {
   const params = useParams<{ username: string; repo: string }>();
@@ -99,28 +99,16 @@ export default function AuditLogPage() {
     setFilters(newFilters);
   }
 
-  function handleExportCSV() {
-    const headers = ["Date", "Action", "User", "Details"];
-    const rows = logs.map((log) => [
-      new Date(log.createdAt).toISOString(),
-      log.action,
-      log.user?.name || log.user?.email || "Unknown",
-      JSON.stringify(log.metadata),
-    ]);
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
-    const csv = [headers, ...rows]
-      .map((row) =>
-        row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")
-      )
-      .join("\n");
-
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `audit-log-${repoSlug}-${new Date().toISOString().split("T")[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+  function handleExport(format: "pdf" | "csv") {
+    if (!repoId) return;
+    const params = new URLSearchParams({ format });
+    if (filters.action) params.set("action", filters.action);
+    if (filters.dateFrom) params.set("dateFrom", new Date(filters.dateFrom).toISOString());
+    if (filters.dateTo) params.set("dateTo", new Date(filters.dateTo).toISOString());
+    window.open(`/api/repos/${repoId}/audit-logs/export?${params}`, "_blank");
+    setShowExportMenu(false);
   }
 
   return (
@@ -129,15 +117,35 @@ export default function AuditLogPage() {
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           Audit Log
         </h2>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleExportCSV}
-          disabled={logs.length === 0}
-        >
-          <Download className="mr-2 h-4 w-4" />
-          Export CSV
-        </Button>
+        <div className="relative">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowExportMenu(!showExportMenu)}
+            disabled={logs.length === 0}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Export
+          </Button>
+          {showExportMenu && (
+            <div className="absolute right-0 top-full z-10 mt-1 w-40 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-900">
+              <button
+                onClick={() => handleExport("pdf")}
+                className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
+              >
+                <FileText className="h-4 w-4 text-red-500" />
+                Export PDF
+              </button>
+              <button
+                onClick={() => handleExport("csv")}
+                className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
+              >
+                <FileSpreadsheet className="h-4 w-4 text-green-500" />
+                Export CSV
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <AuditLogFilters filters={filters} onFilterChange={handleFilterChange} />

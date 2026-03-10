@@ -4,6 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { generateCommitHash } from "@/lib/utils";
 import { MergeRequestStatus } from "@prisma/client";
 import { createAuditLog, createAuditLogTx } from "@/lib/audit";
+import { createNotifications } from "@/lib/notifications";
+import { findCommonAncestor, threeWayMerge } from "@/lib/merge";
+import type { ExcelSnapshot } from "@/types";
 
 type RouteContext = { params: Promise<{ repoId: string; mrId: string }> };
 
@@ -102,29 +105,62 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
         );
       }
 
+      const sourceSnapshot = sourceHeadCommit.jsonSnapshot as unknown as ExcelSnapshot;
+
+      // Get target head snapshot
+      const targetBranch = await prisma.branch.findUnique({
+        where: { id: mergeRequest.targetBranchId },
+        include: { headCommit: true },
+      });
+      const targetSnapshot = targetBranch?.headCommit?.jsonSnapshot as unknown as ExcelSnapshot | undefined;
+
+      let finalSnapshot: ExcelSnapshot;
+
+      if (!targetSnapshot) {
+        // Target has no commits — just copy source
+        finalSnapshot = JSON.parse(JSON.stringify(sourceSnapshot));
+      } else {
+        // Try three-way merge
+        const baseSnapshot = await findCommonAncestor(
+          mergeRequest.sourceBranchId,
+          mergeRequest.targetBranchId
+        );
+
+        if (baseSnapshot) {
+          const { merged, conflicts } = threeWayMerge(baseSnapshot, sourceSnapshot, targetSnapshot);
+          if (conflicts.length > 0) {
+            return NextResponse.json(
+              { error: "Merge conflicts detected", conflicts },
+              { status: 409 }
+            );
+          }
+          finalSnapshot = merged;
+        } else {
+          // No common ancestor — fallback to source snapshot
+          finalSnapshot = JSON.parse(JSON.stringify(sourceSnapshot));
+        }
+      }
+
       const result = await prisma.$transaction(async (tx) => {
         const hash = generateCommitHash();
 
-        // Create a new commit on the target branch with the source's data
         const mergeCommit = await tx.commit.create({
           data: {
             hash,
             message: `Merge: ${mergeRequest.title}`,
             fileUrl: sourceHeadCommit.fileUrl,
-            jsonSnapshot: JSON.parse(JSON.stringify(sourceHeadCommit.jsonSnapshot)),
+            jsonSnapshot: JSON.parse(JSON.stringify(finalSnapshot)),
             authorId: session.user.id,
             branchId: mergeRequest.targetBranchId,
             parentId: mergeRequest.targetBranch.headCommitId ?? undefined,
           },
         });
 
-        // Update target branch head
         await tx.branch.update({
           where: { id: mergeRequest.targetBranchId },
           data: { headCommitId: mergeCommit.id },
         });
 
-        // Update merge request status
         const updatedMR = await tx.mergeRequest.update({
           where: { id: mrId },
           data: { status: MergeRequestStatus.MERGED },
@@ -154,6 +190,15 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
         return updatedMR;
       });
 
+      createNotifications({
+        type: "MR_MERGED",
+        title: "Merge request merged",
+        message: `"${mergeRequest.title}" was merged (${mergeRequest.sourceBranch.name} → ${mergeRequest.targetBranch.name})`,
+        metadata: { mergeRequestId: mrId, title: mergeRequest.title },
+        repoId,
+        actorId: session.user.id,
+      });
+
       return NextResponse.json(result);
     }
 
@@ -176,6 +221,15 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
       repoId,
       metadata: { mergeRequestId: mrId, title: mergeRequest.title },
       req,
+    });
+
+    createNotifications({
+      type: "MR_CLOSED",
+      title: "Merge request closed",
+      message: `"${mergeRequest.title}" was closed`,
+      metadata: { mergeRequestId: mrId, title: mergeRequest.title },
+      repoId,
+      actorId: session.user.id,
     });
 
     return NextResponse.json(updatedMR);

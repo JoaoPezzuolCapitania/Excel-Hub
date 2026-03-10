@@ -12,7 +12,8 @@ import {
 } from "@tanstack/react-table";
 import { Pagination } from "@/components/ui/pagination";
 import { cn, formatCellValue } from "@/lib/utils";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { normalizeCellValue } from "@/lib/excel";
+import { ChevronUp, ChevronDown, FunctionSquare } from "lucide-react";
 import type { ExcelSnapshot } from "@/types";
 
 interface SpreadsheetViewerProps {
@@ -45,10 +46,14 @@ export function SpreadsheetViewer({ snapshot }: SpreadsheetViewerProps) {
         id: header,
         header: header,
         cell: (info) => {
-          const value = info.getValue();
-          const formatted = formatCellValue(value);
+          const raw = info.getValue();
+          const cellData = normalizeCellValue(raw);
+          const formatted = formatCellValue(cellData.value);
           return (
-            <span className={cn(formatted.isNumeric && "font-mono tabular-nums")}>
+            <span className={cn(formatted.isNumeric && "font-mono tabular-nums")} title={cellData.formula ? `=${cellData.formula}` : undefined}>
+              {cellData.formula && (
+                <FunctionSquare className="mr-1 inline h-3 w-3 text-indigo-500" />
+              )}
               {formatted.text}
             </span>
           );

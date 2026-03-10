@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { addCollaboratorSchema } from "@/lib/validators";
 import { CollaboratorRole } from "@prisma/client";
 import { createAuditLog } from "@/lib/audit";
+import { createNotifications } from "@/lib/notifications";
 
 type RouteContext = { params: Promise<{ repoId: string }> };
 
@@ -96,6 +97,15 @@ export async function POST(req: NextRequest, context: RouteContext) {
         role,
       },
       req,
+    });
+
+    createNotifications({
+      type: "COLLABORATOR_ADDED",
+      title: "New collaborator",
+      message: `${email} was added as ${role}`,
+      metadata: { collaboratorEmail: email, role },
+      repoId,
+      actorId: session.user.id,
     });
 
     return NextResponse.json(collaborator, { status: 201 });

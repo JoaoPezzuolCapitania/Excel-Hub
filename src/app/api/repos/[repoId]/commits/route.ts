@@ -5,6 +5,7 @@ import { generateCommitHash } from "@/lib/utils";
 import { getFileFromLocal } from "@/lib/s3";
 import { parseExcelBuffer } from "@/lib/excel";
 import { createAuditLogTx } from "@/lib/audit";
+import { createNotifications } from "@/lib/notifications";
 
 type RouteContext = { params: Promise<{ repoId: string }> };
 
@@ -80,6 +81,15 @@ export async function POST(req: NextRequest, context: RouteContext) {
       });
 
       return newCommit;
+    });
+
+    createNotifications({
+      type: "COMMIT_CREATED",
+      title: "New commit",
+      message: `${commit.author.name || "Someone"} pushed a commit to ${branch.name}: "${message || "Upload file"}"`,
+      metadata: { commitHash: hash, branchName: branch.name },
+      repoId,
+      actorId: session.user.id,
     });
 
     return NextResponse.json(commit, { status: 201 });

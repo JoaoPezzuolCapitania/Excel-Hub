@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
-import { Lock, Globe, GitBranch, GitCommitHorizontal, GitMerge, Settings, ClipboardList } from "lucide-react";
+import { Lock, Globe, GitBranch, GitCommitHorizontal, GitMerge, Settings, ClipboardList, BarChart3 } from "lucide-react";
 
 interface RepoLayoutProps {
   children: React.ReactNode;
@@ -15,6 +15,7 @@ const NAV_TABS = [
   { key: "branches", label: "Branches", icon: GitBranch, segment: "/branches" },
   { key: "merge-requests", label: "Merge Requests", icon: GitMerge, segment: "/merge-requests" },
   { key: "audit-log", label: "Audit Log", icon: ClipboardList, segment: "/audit-log" },
+  { key: "metrics", label: "Metrics", icon: BarChart3, segment: "/metrics" },
   { key: "settings", label: "Settings", icon: Settings, segment: "/settings" },
 ];
 

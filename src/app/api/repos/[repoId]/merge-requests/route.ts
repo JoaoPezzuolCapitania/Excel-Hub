@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createMergeRequestSchema } from "@/lib/validators";
 import { createAuditLog } from "@/lib/audit";
+import { createNotifications } from "@/lib/notifications";
 
 type RouteContext = { params: Promise<{ repoId: string }> };
 
@@ -115,6 +116,15 @@ export async function POST(req: NextRequest, context: RouteContext) {
         targetBranchName: targetBranch?.name,
       },
       req,
+    });
+
+    createNotifications({
+      type: "MR_OPENED",
+      title: "New merge request",
+      message: `${mergeRequest.author.name || "Someone"} opened "${title}" (${sourceBranch.name} → ${targetBranch.name})`,
+      metadata: { mergeRequestId: mergeRequest.id, title },
+      repoId,
+      actorId: session.user.id,
     });
 
     return NextResponse.json(mergeRequest, { status: 201 });

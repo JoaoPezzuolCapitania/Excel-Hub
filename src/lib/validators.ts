@@ -67,6 +67,22 @@ export const uploadFileSchema = z.object({
   branchId: z.string().min(1),
 });
 
+export const createReviewCommentSchema = z.object({
+  content: z
+    .string()
+    .min(1, "Comment cannot be empty")
+    .max(2000, "Comment must be under 2000 characters"),
+  sheetName: z.string().min(1, "Sheet name is required"),
+  row: z.number().int().min(0),
+  col: z.string().min(1, "Column is required"),
+  parentId: z.string().optional(),
+});
+
+export const updateReviewCommentSchema = z.object({
+  content: z.string().min(1).max(2000).optional(),
+  resolved: z.boolean().optional(),
+});
+
 export const auditLogQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
@@ -83,6 +99,7 @@ export const auditLogQuerySchema = z.object({
       "COLLABORATOR_ADDED",
       "COLLABORATOR_REMOVED",
       "FILE_UPLOADED",
+      "REVIEW_COMMENT_ADDED",
     ])
     .optional(),
   userId: z.string().optional(),

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { DiffViewer } from "@/components/repo/diff-viewer";
+import { DiffViewerWithComments } from "@/components/repo/diff-viewer-with-comments";
 import { Badge } from "@/components/ui/badge";
 import { formatRelativeDate } from "@/lib/utils";
 import { computeDiff } from "@/lib/diff";
@@ -127,7 +127,7 @@ export default async function MergeRequestDetailPage({
 
         {/* Actions */}
         {isOwner && mr.status === "OPEN" && (
-          <MergeRequestActions mrId={mr.id} />
+          <MergeRequestActions mrId={mr.id} repoId={repo.id} />
         )}
       </div>
 
@@ -137,7 +137,12 @@ export default async function MergeRequestDetailPage({
           <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
             Changes
           </h3>
-          <DiffViewer diff={diff} />
+          <DiffViewerWithComments
+            diff={diff}
+            mrId={mr.id}
+            repoId={repo.id}
+            currentUserId={session?.user?.id}
+          />
         </div>
       ) : (
         <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">

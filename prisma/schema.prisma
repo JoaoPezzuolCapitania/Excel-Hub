@@ -22,6 +22,8 @@ model User {
   commits        Commit[]
   mergeRequests  MergeRequest[]
   auditLogs      AuditLog[]
+  reviewComments ReviewComment[]
+  notifications  Notification[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -97,6 +99,7 @@ enum AuditAction {
   COLLABORATOR_ADDED
   COLLABORATOR_REMOVED
   FILE_UPLOADED
+  REVIEW_COMMENT_ADDED
 }
 
 model Repository {
@@ -113,6 +116,7 @@ model Repository {
   branches      Branch[]
   collaborators Collaborator[]
   mergeRequests MergeRequest[]
+  webhooks      Webhook[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -209,6 +213,8 @@ model MergeRequest {
   authorId String
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
+  comments ReviewComment[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -236,4 +242,77 @@ model AuditLog {
   @@index([repoId, createdAt])
   @@index([userId, createdAt])
   @@index([action])
+}
+
+// ─── Review Comments ──────────────────────────────────────
+
+model ReviewComment {
+  id       String  @id @default(cuid())
+  content  String  @db.Text
+  resolved Boolean @default(false)
+
+  sheetName String @db.VarChar(100)
+  row       Int
+  col       String @db.VarChar(100)
+
+  mergeRequestId String
+  mergeRequest   MergeRequest @relation(fields: [mergeRequestId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  parentId String?
+  parent   ReviewComment?  @relation("CommentThread", fields: [parentId], references: [id], onDelete: SetNull)
+  replies  ReviewComment[] @relation("CommentThread")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([mergeRequestId])
+  @@index([authorId])
+  @@index([mergeRequestId, sheetName, row, col])
+}
+
+// ─── Notifications ────────────────────────────────────────
+
+enum NotificationType {
+  COMMIT_CREATED
+  MR_OPENED
+  MR_MERGED
+  MR_CLOSED
+  COMMENT_ADDED
+  COLLABORATOR_ADDED
+}
+
+model Notification {
+  id       String           @id @default(cuid())
+  type     NotificationType
+  title    String           @db.VarChar(200)
+  message  String           @db.Text
+  read     Boolean          @default(false)
+  metadata Json             @default("{}")
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+}
+
+model Webhook {
+  id     String   @id @default(cuid())
+  url    String   @db.Text
+  secret String   @db.VarChar(255)
+  events String[]
+  active Boolean  @default(true)
+
+  repoId String
+  repo   Repository @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([repoId])
 }

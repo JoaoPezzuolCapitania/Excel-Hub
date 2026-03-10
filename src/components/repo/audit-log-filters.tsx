@@ -29,6 +29,7 @@ const ACTION_OPTIONS = [
   { value: "COLLABORATOR_ADDED", label: "Collaborator added" },
   { value: "COLLABORATOR_REMOVED", label: "Collaborator removed" },
   { value: "FILE_UPLOADED", label: "File uploaded" },
+  { value: "REVIEW_COMMENT_ADDED", label: "Review comment added" },
 ];
 
 export function AuditLogFilters({ filters, onFilterChange }: AuditLogFiltersProps) {

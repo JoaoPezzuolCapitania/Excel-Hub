@@ -1,7 +1,12 @@
+export interface CellData {
+  value: unknown;
+  formula?: string;
+}
+
 export interface SheetData {
   name: string;
   headers: string[];
-  rows: Record<string, unknown>[];
+  rows: Record<string, CellData>[];
 }
 
 export interface ExcelSnapshot {
@@ -18,7 +23,9 @@ export interface CellChange {
   col: string;
   oldValue: unknown;
   newValue: unknown;
-  type: "added" | "removed" | "modified";
+  oldFormula?: string;
+  newFormula?: string;
+  type: "added" | "removed" | "modified" | "formula_changed";
 }
 
 export interface SheetDiff {
@@ -27,7 +34,7 @@ export interface SheetDiff {
   cellChanges: CellChange[];
   addedRows: number[];
   removedRows: number[];
-  stats: { added: number; removed: number; modified: number };
+  stats: { added: number; removed: number; modified: number; formulaChanged: number };
 }
 
 export interface SnapshotDiff {
@@ -38,6 +45,7 @@ export interface SnapshotDiff {
     totalAdded: number;
     totalRemoved: number;
     totalModified: number;
+    totalFormulaChanged: number;
   };
 }
 

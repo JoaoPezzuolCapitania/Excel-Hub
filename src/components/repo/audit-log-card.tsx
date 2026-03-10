@@ -14,6 +14,7 @@ import {
   Trash2,
   Plus,
   Upload,
+  MessageSquare,
   ChevronDown,
   ChevronRight,
 } from "lucide-react";
@@ -37,6 +38,7 @@ const ACTION_CONFIG: Record<
   COLLABORATOR_ADDED: { icon: UserPlus, label: "Collaborator added", badgeVariant: "success" },
   COLLABORATOR_REMOVED: { icon: UserMinus, label: "Collaborator removed", badgeVariant: "danger" },
   FILE_UPLOADED: { icon: Upload, label: "File uploaded", badgeVariant: "default" },
+  REVIEW_COMMENT_ADDED: { icon: MessageSquare, label: "Comment added", badgeVariant: "info" },
 };
 
 function getActionDescription(action: string, metadata: Record<string, unknown>): string {
@@ -63,6 +65,8 @@ function getActionDescription(action: string, metadata: Record<string, unknown>)
       return `created repository "${metadata.repoName}"`;
     case "FILE_UPLOADED":
       return `uploaded file "${metadata.fileName}"`;
+    case "REVIEW_COMMENT_ADDED":
+      return `commented on ${metadata.sheetName} (Row ${metadata.row}, ${metadata.col})`;
     default:
       return action.toLowerCase().replace(/_/g, " ");
   }

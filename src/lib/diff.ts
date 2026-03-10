@@ -1,32 +1,5 @@
-import type { ExcelSnapshot, SheetData } from "./excel";
-
-export interface CellChange {
-  row: number;
-  col: string;
-  oldValue: unknown;
-  newValue: unknown;
-  type: "added" | "removed" | "modified";
-}
-
-export interface SheetDiff {
-  sheetName: string;
-  status: "added" | "removed" | "modified" | "unchanged";
-  cellChanges: CellChange[];
-  addedRows: number[];
-  removedRows: number[];
-  stats: { added: number; removed: number; modified: number };
-}
-
-export interface SnapshotDiff {
-  sheets: SheetDiff[];
-  summary: {
-    totalChanges: number;
-    sheetsChanged: number;
-    totalAdded: number;
-    totalRemoved: number;
-    totalModified: number;
-  };
-}
+import type { ExcelSnapshot, SheetData, CellChange, SheetDiff, SnapshotDiff } from "@/types";
+import { normalizeCellValue } from "./excel";
 
 function diffSheets(
   oldSheet: SheetData | null,
@@ -40,11 +13,13 @@ function diffSheets(
       addedRows.push(rowIdx);
       for (const col of newSheet.headers) {
         if (row[col] !== undefined) {
+          const cell = normalizeCellValue(row[col]);
           cellChanges.push({
             row: rowIdx,
             col,
             oldValue: undefined,
-            newValue: row[col],
+            newValue: cell.value,
+            newFormula: cell.formula,
             type: "added",
           });
         }
@@ -56,7 +31,7 @@ function diffSheets(
       cellChanges,
       addedRows,
       removedRows: [],
-      stats: { added: cellChanges.length, removed: 0, modified: 0 },
+      stats: { added: cellChanges.length, removed: 0, modified: 0, formulaChanged: 0 },
     };
   }
 
@@ -67,11 +42,13 @@ function diffSheets(
       removedRows.push(rowIdx);
       for (const col of oldSheet.headers) {
         if (row[col] !== undefined) {
+          const cell = normalizeCellValue(row[col]);
           cellChanges.push({
             row: rowIdx,
             col,
-            oldValue: row[col],
+            oldValue: cell.value,
             newValue: undefined,
+            oldFormula: cell.formula,
             type: "removed",
           });
         }
@@ -83,7 +60,7 @@ function diffSheets(
       cellChanges,
       addedRows: [],
       removedRows,
-      stats: { added: 0, removed: cellChanges.length, modified: 0 },
+      stats: { added: 0, removed: cellChanges.length, modified: 0, formulaChanged: 0 },
     };
   }
 
@@ -94,7 +71,7 @@ function diffSheets(
       cellChanges: [],
       addedRows: [],
       removedRows: [],
-      stats: { added: 0, removed: 0, modified: 0 },
+      stats: { added: 0, removed: 0, modified: 0, formulaChanged: 0 },
     };
   }
 
@@ -112,11 +89,13 @@ function diffSheets(
       addedRows.push(rowIdx);
       for (const col of allCols) {
         if (newRow[col] !== undefined) {
+          const newCell = normalizeCellValue(newRow[col]);
           cellChanges.push({
             row: rowIdx,
             col,
             oldValue: undefined,
-            newValue: newRow[col],
+            newValue: newCell.value,
+            newFormula: newCell.formula,
             type: "added",
           });
         }
@@ -128,11 +107,13 @@ function diffSheets(
       removedRows.push(rowIdx);
       for (const col of allCols) {
         if (oldRow[col] !== undefined) {
+          const oldCell = normalizeCellValue(oldRow[col]);
           cellChanges.push({
             row: rowIdx,
             col,
-            oldValue: oldRow[col],
+            oldValue: oldCell.value,
             newValue: undefined,
+            oldFormula: oldCell.formula,
             type: "removed",
           });
         }
@@ -142,33 +123,54 @@ function diffSheets(
 
     if (oldRow && newRow) {
       for (const col of allCols) {
-        const oldVal = oldRow[col];
-        const newVal = newRow[col];
+        const oldRaw = oldRow[col];
+        const newRaw = newRow[col];
+        const oldCell = normalizeCellValue(oldRaw);
+        const newCell = normalizeCellValue(newRaw);
 
-        if (oldVal === undefined && newVal !== undefined) {
+        if (oldRaw === undefined && newRaw !== undefined) {
           cellChanges.push({
             row: rowIdx,
             col,
             oldValue: undefined,
-            newValue: newVal,
+            newValue: newCell.value,
+            newFormula: newCell.formula,
             type: "added",
           });
-        } else if (oldVal !== undefined && newVal === undefined) {
+        } else if (oldRaw !== undefined && newRaw === undefined) {
           cellChanges.push({
             row: rowIdx,
             col,
-            oldValue: oldVal,
+            oldValue: oldCell.value,
             newValue: undefined,
+            oldFormula: oldCell.formula,
             type: "removed",
           });
-        } else if (String(oldVal) !== String(newVal)) {
-          cellChanges.push({
-            row: rowIdx,
-            col,
-            oldValue: oldVal,
-            newValue: newVal,
-            type: "modified",
-          });
+        } else {
+          const valueChanged = String(oldCell.value) !== String(newCell.value);
+          const formulaChanged = (oldCell.formula || "") !== (newCell.formula || "");
+
+          if (valueChanged) {
+            cellChanges.push({
+              row: rowIdx,
+              col,
+              oldValue: oldCell.value,
+              newValue: newCell.value,
+              oldFormula: oldCell.formula,
+              newFormula: newCell.formula,
+              type: "modified",
+            });
+          } else if (formulaChanged) {
+            cellChanges.push({
+              row: rowIdx,
+              col,
+              oldValue: oldCell.value,
+              newValue: newCell.value,
+              oldFormula: oldCell.formula,
+              newFormula: newCell.formula,
+              type: "formula_changed",
+            });
+          }
         }
       }
     }
@@ -178,6 +180,7 @@ function diffSheets(
     added: cellChanges.filter((c) => c.type === "added").length,
     removed: cellChanges.filter((c) => c.type === "removed").length,
     modified: cellChanges.filter((c) => c.type === "modified").length,
+    formulaChanged: cellChanges.filter((c) => c.type === "formula_changed").length,
   };
 
   return {
@@ -212,15 +215,17 @@ export function computeDiff(
   const totalAdded = sheets.reduce((sum, s) => sum + s.stats.added, 0);
   const totalRemoved = sheets.reduce((sum, s) => sum + s.stats.removed, 0);
   const totalModified = sheets.reduce((sum, s) => sum + s.stats.modified, 0);
+  const totalFormulaChanged = sheets.reduce((sum, s) => sum + s.stats.formulaChanged, 0);
 
   return {
     sheets,
     summary: {
-      totalChanges: totalAdded + totalRemoved + totalModified,
+      totalChanges: totalAdded + totalRemoved + totalModified + totalFormulaChanged,
       sheetsChanged: sheets.filter((s) => s.status !== "unchanged").length,
       totalAdded,
       totalRemoved,
       totalModified,
+      totalFormulaChanged,
     },
   };
 }
