@@ -6,6 +6,45 @@ import { slugify } from "@/lib/utils";
 import { CollaboratorRole } from "@prisma/client";
 import { createAuditLogTx } from "@/lib/audit";
 
+export async function GET() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const collaborations = await prisma.collaborator.findMany({
+      where: { userId: session.user.id },
+      include: {
+        repo: {
+          include: {
+            owner: {
+              select: { id: true, name: true, email: true, image: true },
+            },
+            branches: {
+              select: { id: true, name: true },
+            },
+          },
+        },
+      },
+      orderBy: { repo: { updatedAt: "desc" } },
+    });
+
+    const repos = collaborations.map((c) => ({
+      ...c.repo,
+      role: c.role,
+    }));
+
+    return NextResponse.json(repos);
+  } catch (error) {
+    console.error("Error listing repositories:", error);
+    return NextResponse.json(
+      { error: "Failed to list repositories" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const session = await auth();

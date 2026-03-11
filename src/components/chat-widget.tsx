@@ -10,6 +10,7 @@ interface Message {
 }
 
 export function ChatWidget() {
+  const [isAddin, setIsAddin] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -28,6 +29,12 @@ export function ChatWidget() {
   }, []);
 
   useEffect(() => {
+    if (window.location.pathname.startsWith("/addin")) {
+      setIsAddin(true);
+    }
+  }, []);
+
+  useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
@@ -36,6 +43,8 @@ export function ChatWidget() {
       inputRef.current?.focus();
     }
   }, [isOpen]);
+
+  if (isAddin) return null;
 
   async function handleSend() {
     const trimmed = input.trim();
@@ -182,7 +191,7 @@ export function ChatWidget() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "fixed bottom-4 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full shadow-lg transition-all hover:scale-105 sm:right-6",
+          "fixed bottom-4 right-4 z-50 grid h-12 w-12 place-items-center rounded-full shadow-lg transition-all hover:scale-105 sm:right-6",
           isOpen
             ? "bg-gray-600 hover:bg-gray-700"
             : "bg-brand-600 hover:bg-brand-700"
@@ -191,7 +200,7 @@ export function ChatWidget() {
         {isOpen ? (
           <X className="h-5 w-5 text-white" />
         ) : (
-          <MessageCircle className="h-5 w-5 text-white" />
+          <MessageCircle className="h-5 w-5 text-white translate-x-[-0.5px] translate-y-[0.5px]" />
         )}
       </button>
     </>

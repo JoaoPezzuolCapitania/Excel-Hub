@@ -46,7 +46,12 @@ export function LoginButton({ provider, className }: LoginButtonProps) {
 
   return (
     <button
-      onClick={() => signIn(provider, { callbackUrl: "/dashboard" })}
+      onClick={() => {
+        // Allow override via URL param (used by Office Add-in dialog)
+        const params = new URLSearchParams(window.location.search);
+        const callbackUrl = params.get("callbackUrl") || "/dashboard";
+        signIn(provider, { callbackUrl });
+      }}
       className={cn(
         "flex w-full items-center justify-center rounded-md px-4 py-3 text-sm font-medium transition-colors",
         providerClassName,

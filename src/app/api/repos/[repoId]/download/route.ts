@@ -3,6 +3,7 @@ import * as XLSX from "xlsx";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { snapshotToWorkbook } from "@/lib/excel";
+import { getFileFromLocal } from "@/lib/s3";
 import type { ExcelSnapshot } from "@/types";
 
 type RouteContext = { params: Promise<{ repoId: string }> };
@@ -74,6 +75,8 @@ export async function GET(req: NextRequest, context: RouteContext) {
     const commit = await prisma.commit.findUnique({
       where: { id: resolvedCommitId },
       select: {
+        fileUrl: true,
+        message: true,
         jsonSnapshot: true,
         branch: { select: { name: true } },
       },
@@ -86,10 +89,35 @@ export async function GET(req: NextRequest, context: RouteContext) {
       );
     }
 
-    const snapshot = commit.jsonSnapshot as unknown as ExcelSnapshot;
-    const workbook = snapshotToWorkbook(snapshot);
     const branchName = commit.branch?.name || repo.defaultBranch;
     const safeName = `${repo.slug}-${branchName}`.replace(/[^a-zA-Z0-9-_]/g, "_");
+
+    // For XLSX format, try serving the original file to preserve formatting
+    if (format === "xlsx") {
+      const isMergeCommit = commit.message?.startsWith("Merge:");
+      const isOriginalXlsx = commit.fileUrl?.endsWith(".xlsx");
+
+      if (!isMergeCommit && isOriginalXlsx && commit.fileUrl) {
+        try {
+          const originalBuffer = await getFileFromLocal(commit.fileUrl);
+          return new NextResponse(originalBuffer, {
+            headers: {
+              "Content-Type":
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              "Content-Disposition": `attachment; filename="${safeName}.xlsx"`,
+            },
+          });
+        } catch {
+          console.warn(
+            `Original file not found for commit ${resolvedCommitId}, falling back to snapshot reconstruction`
+          );
+        }
+      }
+    }
+
+    // Fallback: reconstruct from snapshot
+    const snapshot = commit.jsonSnapshot as unknown as ExcelSnapshot;
+    const workbook = snapshotToWorkbook(snapshot);
 
     if (format === "csv") {
       // Export first sheet as CSV

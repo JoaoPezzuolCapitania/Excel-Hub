@@ -47,6 +47,7 @@ interface FlatItem {
 }
 
 export function CommandPalette() {
+  const [isAddin, setIsAddin] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResults | null>(null);
@@ -62,6 +63,12 @@ export function CommandPalette() {
     setQuery("");
     setResults(null);
     setSelectedIndex(0);
+  }, []);
+
+  useEffect(() => {
+    if (window.location.pathname.startsWith("/addin")) {
+      setIsAddin(true);
+    }
   }, []);
 
   // Ctrl+K / Cmd+K to open
@@ -158,7 +165,7 @@ export function CommandPalette() {
     router.push(url);
   }
 
-  if (!isOpen) return null;
+  if (isAddin || !isOpen) return null;
 
   let itemIndex = -1;
 
