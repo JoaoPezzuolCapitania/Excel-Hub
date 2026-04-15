@@ -175,7 +175,7 @@ export default function RepoSettingsPage() {
                 className={cn(
                   "flex w-full items-center gap-3 rounded-lg border p-4 text-left transition-colors",
                   visibility === "PUBLIC"
-                    ? "border-brand-500 bg-brand-50"
+                    ? "border-brand-500 bg-brand-50 dark:bg-brand-950/40"
                     : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
                 )}
               >
@@ -200,7 +200,7 @@ export default function RepoSettingsPage() {
                 className={cn(
                   "flex w-full items-center gap-3 rounded-lg border p-4 text-left transition-colors",
                   visibility === "PRIVATE"
-                    ? "border-brand-500 bg-brand-50"
+                    ? "border-brand-500 bg-brand-50 dark:bg-brand-950/40"
                     : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
                 )}
               >
@@ -223,13 +223,13 @@ export default function RepoSettingsPage() {
           </div>
 
           {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
+            <div className="rounded-md bg-red-50 dark:bg-red-950/30 p-3 text-sm text-red-600 dark:text-red-400">
               {error}
             </div>
           )}
 
           {success && (
-            <div className="rounded-md bg-green-50 p-3 text-sm text-green-600">
+            <div className="rounded-md bg-green-50 dark:bg-green-950/30 p-3 text-sm text-green-600 dark:text-green-400">
               {success}
             </div>
           )}
@@ -254,7 +254,7 @@ export default function RepoSettingsPage() {
         <h2 className="mb-4 text-lg font-semibold text-red-600">
           Danger Zone
         </h2>
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+        <div className="rounded-lg border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 p-4">
           <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
             Delete this repository
           </h3>

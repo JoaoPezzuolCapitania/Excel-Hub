@@ -32,9 +32,9 @@ export async function GET(req: NextRequest, context: RouteContext) {
     const commitId = searchParams.get("commitId");
     const branchId = searchParams.get("branchId");
 
-    if (format !== "xlsx" && format !== "csv") {
+    if (format !== "xlsx" && format !== "csv" && format !== "json") {
       return NextResponse.json(
-        { error: "Format must be 'xlsx' or 'csv'" },
+        { error: "Format must be 'xlsx', 'csv', or 'json'" },
         { status: 400 }
       );
     }
@@ -87,6 +87,11 @@ export async function GET(req: NextRequest, context: RouteContext) {
         { error: "No data in this commit" },
         { status: 404 }
       );
+    }
+
+    // Return raw JSON snapshot for add-in (writes directly into current workbook)
+    if (format === "json") {
+      return NextResponse.json(commit.jsonSnapshot);
     }
 
     const branchName = commit.branch?.name || repo.defaultBranch;

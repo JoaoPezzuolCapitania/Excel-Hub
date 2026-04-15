@@ -29,6 +29,26 @@ export function parseExcelBuffer(buffer: Buffer): ExcelSnapshot {
   for (const sheetName of workbook.SheetNames) {
     const worksheet = workbook.Sheets[sheetName];
 
+    // Fix incorrect !ref by recalculating from actual cell keys
+    const cellKeys = Object.keys(worksheet).filter((k) => !k.startsWith("!"));
+    if (cellKeys.length > 0) {
+      let minR = Infinity, maxR = -Infinity, minC = Infinity, maxC = -Infinity;
+      for (const key of cellKeys) {
+        const addr = XLSX.utils.decode_cell(key);
+        if (addr.r < minR) minR = addr.r;
+        if (addr.r > maxR) maxR = addr.r;
+        if (addr.c < minC) minC = addr.c;
+        if (addr.c > maxC) maxC = addr.c;
+      }
+      const realRef =
+        XLSX.utils.encode_cell({ r: minR, c: minC }) +
+        ":" +
+        XLSX.utils.encode_cell({ r: maxR, c: maxC });
+      if (worksheet["!ref"] !== realRef) {
+        worksheet["!ref"] = realRef;
+      }
+    }
+
     // Get raw values via sheet_to_json
     const jsonData = XLSX.utils.sheet_to_json<Record<string, unknown>>(
       worksheet
